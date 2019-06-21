@@ -46,26 +46,22 @@ class RuleSelectionView(val base: Rulebase, val book: RulebookModel) : View() {
     }
 
     private fun excludeRule() {
-        val toExclude = included.selectionModel.selectedItems.toList()
-        excluded.selectionModel.clearSelection()
-        toExclude.forEach {
-            book.item.rules -= it
-            excluded.items = base.excluded(book.item)
-            excluded.selectionModel.select(it)
-            excluded.requestFocus()
-        }
+        shiftBetweenLists(included, excluded) { rule -> book.item.rules -= rule }
     }
 
-
     private fun includeRule() {
-        val toInclude = excluded.selectionModel.selectedItems.toList()
-        included.selectionModel.clearSelection()
-        toInclude.forEach {
-            book.item.rules += it
+        shiftBetweenLists(excluded, included) { rule -> book.item.rules += rule }
+    }
+
+    private fun shiftBetweenLists(fromList: TableView<Rule>, toList: TableView<Rule>, operation: (rule: Rule) -> Unit) {
+        val toMove = fromList.selectionModel.selectedItems.toList()
+        toList.selectionModel.clearSelection()
+        toMove.forEach {
+            operation(it)
             excluded.items = base.excluded(book.item)
-            included.selectionModel.select(it)
-            included.requestFocus()
+            toList.selectionModel.select(it)
         }
+        toList.requestFocus()
     }
 
 }

@@ -1,16 +1,13 @@
 package org.geepawhill.rules.ui
 
-import javafx.beans.property.ObjectProperty
 import javafx.scene.Parent
 import javafx.scene.control.TableView
 import org.geepawhill.rules.domain.Rule
 import org.geepawhill.rules.domain.Rulebase
-import org.geepawhill.rules.domain.Rulebook
 import tornadofx.*
 
-class RuleSelectionView(val base: Rulebase, bookProperty: ObjectProperty<Rulebook>) : View() {
+class RuleSelectionView(val base: Rulebase, book: RulebookModel) : View() {
 
-    private val book by bookProperty
     val rule = RuleModel()
 
     lateinit var included: TableView<Rule>
@@ -18,7 +15,7 @@ class RuleSelectionView(val base: Rulebase, bookProperty: ObjectProperty<Ruleboo
 
     override val root: Parent =
             hbox {
-                included = tableview(book.rules) {
+                included = tableview {
                     readonlyColumn("Name", Rule::name)
                     readonlyColumn("Description", Rule::description)
                     bindSelected(rule)
@@ -26,7 +23,7 @@ class RuleSelectionView(val base: Rulebase, bookProperty: ObjectProperty<Ruleboo
                 vbox {
                     label("Tools")
                 }
-                excluded = tableview(base.excluded(book)) {
+                excluded = tableview {
                     readonlyColumn("Name", Rule::name)
                     readonlyColumn("Description", Rule::description)
                     bindSelected(rule)
@@ -34,7 +31,7 @@ class RuleSelectionView(val base: Rulebase, bookProperty: ObjectProperty<Ruleboo
             }
 
     init {
-        bookProperty.addListener { _, _, after ->
+        book.itemProperty.addListener { _, _, after ->
             included.items = after.rules
             excluded.items = base.excluded(after)
         }

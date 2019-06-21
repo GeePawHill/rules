@@ -1,6 +1,5 @@
 package org.geepawhill.rules.ui
 
-import javafx.beans.property.SimpleObjectProperty
 import javafx.geometry.Orientation
 import javafx.scene.Parent
 import org.geepawhill.rules.domain.Rule
@@ -9,11 +8,11 @@ import org.geepawhill.rules.domain.Rulebook
 import tornadofx.*
 
 class MainRulesView() : View() {
-    private val book = Rulebook("Name", "Description", mutableListOf<Rule>().observable())
-    private val bookProperty = SimpleObjectProperty(Rulebook("Name", "Description", mutableListOf<Rule>().observable()))
-    private val rulebase = Rulebase()
+    private val base = Rulebase()
 
-    private val ruleSelectionView = RuleSelectionView(rulebase, bookProperty)
+    val book = RulebookModel()
+
+    private val ruleSelectionView = RuleSelectionView(base, book)
 
     override val root: Parent =
             vbox {
@@ -28,11 +27,12 @@ class MainRulesView() : View() {
             }
 
     init {
+        val newBook = Rulebook("Name", "Description", mutableListOf<Rule>().observable())
         for (i in 1..10) {
             val rule = Rule("Rule $i", "Description $i")
-            rulebase.rules += rule
-            if ((i % 2) == 0) book.rules.add(rule)
+            base.rules += rule
+            if ((i % 2) == 0) newBook.rules.add(rule)
         }
-        bookProperty.value = book
+        book.item = newBook
     }
 }

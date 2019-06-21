@@ -2,6 +2,7 @@ package org.geepawhill.rules.ui
 
 import javafx.beans.property.ObjectProperty
 import javafx.scene.Parent
+import javafx.scene.control.TableView
 import org.geepawhill.rules.domain.Rule
 import org.geepawhill.rules.domain.Rulebase
 import org.geepawhill.rules.domain.Rulebook
@@ -12,31 +13,31 @@ class RuleSelectionView(val base: Rulebase, bookProperty: ObjectProperty<Ruleboo
     private val book by bookProperty
     val rule = RuleModel()
 
+    lateinit var included: TableView<Rule>
+    lateinit var excluded: TableView<Rule>
+
     override val root: Parent =
             hbox {
-                tableview(book.rules) {
+                included = tableview(book.rules) {
                     readonlyColumn("Name", Rule::name)
                     readonlyColumn("Description", Rule::description)
                     bindSelected(rule)
-                    bookProperty.addListener { _, _, after ->
-                        items = after.rules
-                    }
                 }
                 vbox {
                     label("Tools")
                 }
-                tableview(base.excluded(book)) {
+                excluded = tableview(base.excluded(book)) {
                     readonlyColumn("Name", Rule::name)
                     readonlyColumn("Description", Rule::description)
                     bindSelected(rule)
-                    bookProperty.addListener { _, _, after ->
-                        items = base.excluded(after)
-                    }
                 }
-
             }
 
     init {
+        bookProperty.addListener { _, _, after ->
+            included.items = after.rules
+            excluded.items = base.excluded(after)
+        }
     }
 
 }

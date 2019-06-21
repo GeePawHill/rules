@@ -1,5 +1,6 @@
 package org.geepawhill.rules.ui
 
+import javafx.beans.property.SimpleBooleanProperty
 import javafx.scene.Parent
 import javafx.scene.control.TableView
 import org.geepawhill.rules.domain.Rule
@@ -13,6 +14,8 @@ class RuleSelectionView(val base: Rulebase, val book: RulebookModel) : View() {
     private lateinit var included: TableView<Rule>
     private lateinit var excluded: TableView<Rule>
 
+    private val canLeft = SimpleBooleanProperty(false)
+
     override val root: Parent =
             hbox {
                 included = tableview {
@@ -22,11 +25,18 @@ class RuleSelectionView(val base: Rulebase, val book: RulebookModel) : View() {
                     bindSelected(rule)
                 }
                 vbox {
+                    region { minHeight = 50.0 }
                     button("<") {
                         action { includeRule() }
+                        enableWhen(canLeft)
                     }
                     button(">") {
                         action { excludeRule() }
+                    }
+                    region { minHeight = 50.0 }
+                    button("^") {
+                    }
+                    button("v") {
                     }
                 }
                 excluded = tableview {

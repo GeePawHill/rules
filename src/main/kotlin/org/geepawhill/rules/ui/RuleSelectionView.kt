@@ -1,6 +1,8 @@
 package org.geepawhill.rules.ui
 
+import javafx.beans.binding.Bindings
 import javafx.beans.property.SimpleBooleanProperty
+import javafx.beans.property.SimpleStringProperty
 import javafx.scene.Parent
 import javafx.scene.control.TableView
 import org.geepawhill.rules.domain.Rule
@@ -15,23 +17,33 @@ class RuleSelectionView(val base: Rulebase, val book: RulebookModel) : View() {
     private lateinit var excluded: TableView<Rule>
 
     private val canLeft = SimpleBooleanProperty(false)
+    private val canRight = SimpleBooleanProperty(false)
 
     override val root: Parent =
             hbox {
-                included = tableview {
-                    multiSelect(true)
-                    readonlyColumn("Name", Rule::name)
-                    readonlyColumn("Description", Rule::description)
-                    bindSelected(rule)
+                vbox {
+                    label("Included Rules")
+                    included = tableview {
+                        multiSelect(true)
+                        column<Rule, String>("Sequence") {
+                            SimpleStringProperty(book.rulesProperty.value.indexOf(it.value).toString())
+                        }
+                        readonlyColumn("Name", Rule::name)
+                        readonlyColumn("Description", Rule::description)
+                        bindSelected(rule)
+                    }
                 }
                 vbox {
                     region { minHeight = 50.0 }
                     button("<") {
+                        isFocusTraversable = false
                         action { includeRule() }
                         enableWhen(canLeft)
                     }
                     button(">") {
+                        isFocusTraversable = false
                         action { excludeRule() }
+                        enableWhen { canRight }
                     }
                     region { minHeight = 50.0 }
                     button("^") {
@@ -39,11 +51,14 @@ class RuleSelectionView(val base: Rulebase, val book: RulebookModel) : View() {
                     button("v") {
                     }
                 }
-                excluded = tableview {
-                    multiSelect(true)
-                    readonlyColumn("Name", Rule::name)
-                    readonlyColumn("Description", Rule::description)
-                    bindSelected(rule)
+                vbox {
+                    label("Excluded Rules")
+                    excluded = tableview {
+                        multiSelect(true)
+                        readonlyColumn("Name", Rule::name)
+                        readonlyColumn("Description", Rule::description)
+                        bindSelected(rule)
+                    }
                 }
             }
 
@@ -53,6 +68,20 @@ class RuleSelectionView(val base: Rulebase, val book: RulebookModel) : View() {
             included.items = after.rules
             excluded.items = base.excluded(after)
         }
+
+        canLeft.bind(
+                Bindings.and(
+                        excluded.focusedProperty(),
+                        Bindings.notEqual(excluded.selectionModel.selectedItems.sizeProperty, 0)
+                )
+        )
+
+        canRight.bind(
+                Bindings.and(
+                        included.focusedProperty(),
+                        Bindings.notEqual(included.selectionModel.selectedItems.sizeProperty, 0)
+                )
+        )
     }
 
     private fun excludeRule() {

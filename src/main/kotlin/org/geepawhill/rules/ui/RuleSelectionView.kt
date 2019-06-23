@@ -121,28 +121,14 @@ class RuleSelectionView(val base: Rulebase, val book: RulebookModel) : View() {
         shiftBetweenLists(excluded, included) { rule -> book.item.rules += rule }
     }
 
-    private fun raisePriority() {
-        val toRaise = included.selectionModel.selectedItems.toList()
-        included.selectionModel.clearSelection()
-        toRaise.forEach {
-            val index = included.items.indexOf(it)
-            included.items.remove(it)
-            included.items.add(index - 1, it)
-            included.selectionModel.select(it)
-        }
-        included.refresh()
-    }
+    private fun raisePriority() = changePriority { raisePriority(it) }
+    private fun lowerPriority() = changePriority { lowerPriority(it) }
 
-    private fun lowerPriority() {
-        val toLower = included.selectionModel.selectedItems.toList()
+    private fun changePriority(change: RulebookModel.(tochange: List<Rule>) -> Unit) {
+        val toChange = included.selectionModel.selectedItems.toList()
+        book.change(toChange)
         included.selectionModel.clearSelection()
-        toLower.forEach {
-            val index = included.items.indexOf(it)
-            included.items.remove(it)
-            included.items.add(index + 1, it)
-            included.selectionModel.select(it)
-        }
-        included.refresh()
+        toChange.forEach { included.selectionModel.select(it) }
     }
 
     private fun shiftBetweenLists(fromList: TableView<Rule>, toList: TableView<Rule>, operation: (rule: Rule) -> Unit) {

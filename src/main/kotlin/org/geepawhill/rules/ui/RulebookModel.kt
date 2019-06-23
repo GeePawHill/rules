@@ -16,12 +16,22 @@ class RulebookModel : ItemViewModel<Rulebook>() {
         sort(toLower) { first, second ->
             rules.indexOf(second) - rules.indexOf(first)
         }
+        if (toLower.first() == rules.last()) return
         toLower.forEach {
             val index = rules.indexOf(it)
             if (index < rules.size - 1) {
                 rules.remove(it)
                 rules.add(index + 1, it)
             }
+        }
+    }
+
+    fun raisePriority(toRaise: List<Rule>) {
+        if (toRaise.contains(rules.first())) return
+        toRaise.forEach {
+            val index = rules.indexOf(it)
+            rules.remove(it)
+            rules.add(index - 1, it)
         }
     }
 

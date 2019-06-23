@@ -18,6 +18,10 @@ class RuleSelectionView(val base: Rulebase, val book: RulebookModel) : View() {
 
     private val canLeft = SimpleBooleanProperty(false)
     private val canRight = SimpleBooleanProperty(false)
+    private val canUp = SimpleBooleanProperty(false)
+    private val canDown = SimpleBooleanProperty(false)
+    private val zerothItemSelected = SimpleBooleanProperty(false)
+    private val lastItemSelected = SimpleBooleanProperty(false)
 
     override val root: Parent =
             hbox {
@@ -47,8 +51,14 @@ class RuleSelectionView(val base: Rulebase, val book: RulebookModel) : View() {
                     }
                     region { minHeight = 50.0 }
                     button("^") {
+                        isFocusTraversable = false
+                        action { raisePriority() }
+                        enableWhen { canUp }
                     }
                     button("v") {
+                        isFocusTraversable = false
+                        action { lowerPriority() }
+                        enableWhen { canDown }
                     }
                 }
                 vbox {
@@ -82,6 +92,25 @@ class RuleSelectionView(val base: Rulebase, val book: RulebookModel) : View() {
                         Bindings.notEqual(included.selectionModel.selectedItems.sizeProperty, 0)
                 )
         )
+
+        canUp.bind(
+                Bindings.and(
+                        included.focusedProperty(),
+                        zerothItemSelected
+                )
+        )
+
+        canDown.bind(
+                Bindings.and(
+                        included.focusedProperty(),
+                        lastItemSelected
+                )
+        )
+
+        included.selectionModel.selectedItemProperty().addListener { _, _, _ ->
+            zerothItemSelected.value = !included.selectionModel.selectedIndices.contains(0)
+            lastItemSelected.value = !included.selectionModel.selectedIndices.contains(included.items.size - 1)
+        }
     }
 
     private fun excludeRule() {
@@ -90,6 +119,30 @@ class RuleSelectionView(val base: Rulebase, val book: RulebookModel) : View() {
 
     private fun includeRule() {
         shiftBetweenLists(excluded, included) { rule -> book.item.rules += rule }
+    }
+
+    private fun raisePriority() {
+        val toRaise = included.selectionModel.selectedItems.toList()
+        included.selectionModel.clearSelection()
+        toRaise.forEach {
+            val index = included.items.indexOf(it)
+            included.items.remove(it)
+            included.items.add(index - 1, it)
+            included.selectionModel.select(it)
+        }
+        included.refresh()
+    }
+
+    private fun lowerPriority() {
+        val toLower = included.selectionModel.selectedItems.toList()
+        included.selectionModel.clearSelection()
+        toLower.forEach {
+            val index = included.items.indexOf(it)
+            included.items.remove(it)
+            included.items.add(index + 1, it)
+            included.selectionModel.select(it)
+        }
+        included.refresh()
     }
 
     private fun shiftBetweenLists(fromList: TableView<Rule>, toList: TableView<Rule>, operation: (rule: Rule) -> Unit) {

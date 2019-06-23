@@ -9,6 +9,7 @@ import tornadofx.*
 
 class MainRulesView() : View() {
     private val base = Rulebase()
+    val newBook = Rulebook("Name", "Description", mutableListOf<Rule>().observable())
 
     val book = RulebookModel()
 
@@ -17,7 +18,17 @@ class MainRulesView() : View() {
     override val root: Parent =
             vbox {
                 toolbar {
-                    button("New Rule") {
+                    button("Show domain") {
+                        action {
+                            println("Model")
+                            book.rulesProperty.value.forEach {
+                                println("\t${it.name}")
+                            }
+                            println("Domain")
+                            newBook.rules.forEach {
+                                println("\t${it.name}")
+                            }
+                        }
                     }
                 }
                 splitpane(Orientation.VERTICAL) {
@@ -27,7 +38,7 @@ class MainRulesView() : View() {
             }
 
     init {
-        val newBook = Rulebook("Name", "Description", mutableListOf<Rule>().observable())
+
         for (i in 1..10) {
             val rule = Rule("Rule $i", "Description $i")
             base.rules += rule

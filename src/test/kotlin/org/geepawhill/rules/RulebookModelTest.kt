@@ -18,7 +18,7 @@ class RulebookModelTest {
         model.rules.add(firstRule)
         model.rules.add(secondRule)
 
-        model.lowerPriority(listOf(firstRule))
+        model.lower(listOf(firstRule))
         assertThat(model.rules).containsExactly(secondRule, firstRule)
     }
 
@@ -27,7 +27,7 @@ class RulebookModelTest {
         model.rules.add(firstRule)
         model.rules.add(secondRule)
 
-        model.lowerPriority(listOf(secondRule))
+        model.lower(listOf(secondRule))
         assertThat(model.rules).containsExactly(firstRule, secondRule)
     }
 
@@ -37,7 +37,7 @@ class RulebookModelTest {
         model.rules.add(secondRule)
         model.rules.add(thirdRule)
 
-        model.lowerPriority(listOf(firstRule, thirdRule))
+        model.lower(listOf(firstRule, thirdRule))
         assertThat(model.rules).containsExactly(firstRule, secondRule, thirdRule)
     }
 
@@ -47,7 +47,7 @@ class RulebookModelTest {
         model.rules.add(secondRule)
         model.rules.add(thirdRule)
 
-        model.lowerPriority(listOf(thirdRule, firstRule))
+        model.lower(listOf(thirdRule, firstRule))
         assertThat(model.rules).containsExactly(firstRule, secondRule, thirdRule)
     }
 
@@ -57,7 +57,7 @@ class RulebookModelTest {
         model.rules.add(secondRule)
         model.rules.add(thirdRule)
 
-        model.lowerPriority(listOf(firstRule, secondRule))
+        model.lower(listOf(firstRule, secondRule))
         assertThat(model.rules).containsExactly(thirdRule, firstRule, secondRule)
     }
 
@@ -68,7 +68,7 @@ class RulebookModelTest {
         model.rules.add(thirdRule)
         model.rules.add(fourthRule)
 
-        model.lowerPriority(listOf(firstRule, thirdRule))
+        model.lower(listOf(firstRule, thirdRule))
         assertThat(model.rules).containsExactly(secondRule, firstRule, fourthRule, thirdRule)
     }
 
@@ -77,7 +77,7 @@ class RulebookModelTest {
         model.rules.add(firstRule)
         model.rules.add(secondRule)
 
-        model.raisePriority(listOf(secondRule))
+        model.raise(listOf(secondRule))
         assertThat(model.rules).containsExactly(secondRule, firstRule)
     }
 
@@ -86,7 +86,7 @@ class RulebookModelTest {
         model.rules.add(firstRule)
         model.rules.add(secondRule)
 
-        model.raisePriority(listOf(firstRule))
+        model.raise(listOf(firstRule))
         assertThat(model.rules).containsExactly(firstRule, secondRule)
     }
 
@@ -96,7 +96,7 @@ class RulebookModelTest {
         model.rules.add(secondRule)
         model.rules.add(thirdRule)
 
-        model.raisePriority(listOf(firstRule, thirdRule))
+        model.raise(listOf(firstRule, thirdRule))
         assertThat(model.rules).containsExactly(firstRule, secondRule, thirdRule)
     }
 
@@ -106,7 +106,7 @@ class RulebookModelTest {
         model.rules.add(secondRule)
         model.rules.add(thirdRule)
 
-        model.raisePriority(listOf(thirdRule, firstRule))
+        model.raise(listOf(thirdRule, firstRule))
         assertThat(model.rules).containsExactly(firstRule, secondRule, thirdRule)
     }
 
@@ -116,7 +116,7 @@ class RulebookModelTest {
         model.rules.add(secondRule)
         model.rules.add(thirdRule)
 
-        model.raisePriority(listOf(secondRule, thirdRule))
+        model.raise(listOf(secondRule, thirdRule))
         assertThat(model.rules).containsExactly(secondRule, thirdRule, firstRule)
     }
 
@@ -127,7 +127,7 @@ class RulebookModelTest {
         model.rules.add(thirdRule)
         model.rules.add(fourthRule)
 
-        model.raisePriority(listOf(secondRule, fourthRule))
+        model.raise(listOf(secondRule, fourthRule))
         assertThat(model.rules).containsExactly(secondRule, firstRule, fourthRule, thirdRule)
     }
 

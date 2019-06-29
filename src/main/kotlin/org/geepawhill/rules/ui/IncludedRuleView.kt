@@ -1,6 +1,5 @@
 package org.geepawhill.rules.ui
 
-import javafx.beans.binding.Bindings
 import javafx.beans.property.SimpleStringProperty
 import javafx.scene.Parent
 import javafx.scene.control.TableView
@@ -11,7 +10,6 @@ import tornadofx.*
 class IncludedRuleView(val base: Rulebase, val book: RulebookModel, val rule: RuleModel) : View() {
 
     lateinit var included: TableView<Rule>
-
 
     override val root: Parent =
             vbox {
@@ -27,10 +25,7 @@ class IncludedRuleView(val base: Rulebase, val book: RulebookModel, val rule: Ru
                 }
             }
 
-    val canExclude = Bindings.and(
-            included.focusedProperty(),
-            Bindings.notEqual(included.selectionModel.selectedItems.sizeProperty, 0)
-    )
+    val canExclude = included.isSelectedAndFocused()
 
     val canRaise = booleanBinding(
             included.focusedProperty(),
@@ -46,16 +41,14 @@ class IncludedRuleView(val base: Rulebase, val book: RulebookModel, val rule: Ru
         included.focusedProperty().value && !included.selectionModel.selectedIndices.contains(included.items.size - 1)
     }
 
-    fun grabSelection(): List<Rule> {
-        val result = included.selectionModel.selectedItems.toList()
-        included.selectionModel.clearSelection()
-        return result
-    }
-
     fun resetSelection(rules: List<Rule>) {
         included.selectionModel.clearSelection()
         rules.forEach { included.selectionModel.select(it) }
         included.requestFocus()
     }
 
+    fun grabSelection() = included.grabSelection()
+
 }
+
+

@@ -1,16 +1,14 @@
 package org.geepawhill.rules.ui
 
-import javafx.beans.binding.Bindings
 import javafx.scene.Parent
 import javafx.scene.control.TableView
 import org.geepawhill.rules.domain.Rule
 import org.geepawhill.rules.domain.Rulebase
 import tornadofx.*
 
-class ExcludedRuleView(val base: Rulebase, val book: RulebookModel, val rule: RuleModel) : View() {
+class ExcludedRuleView(private val base: Rulebase, private val book: RulebookModel, val rule: RuleModel) : View() {
 
-    lateinit var excluded: TableView<Rule>
-
+    private lateinit var excluded: TableView<Rule>
 
     override val root: Parent =
             vbox {
@@ -23,10 +21,7 @@ class ExcludedRuleView(val base: Rulebase, val book: RulebookModel, val rule: Ru
                 }
             }
 
-    val canInclude = Bindings.and(
-            excluded.focusedProperty(),
-            Bindings.notEqual(excluded.selectionModel.selectedItems.sizeProperty, 0)
-    )
+    val canInclude = excluded.isSelectedAndFocused()
 
     init {
         book.itemProperty.addListener { _, _, after ->
@@ -41,10 +36,8 @@ class ExcludedRuleView(val base: Rulebase, val book: RulebookModel, val rule: Ru
         excluded.requestFocus()
     }
 
-    fun grabSelection(): List<Rule> {
-        val result = excluded.selectionModel.selectedItems.toList()
-        excluded.selectionModel.clearSelection()
-        return result
-    }
-
+    fun grabSelection(): List<Rule> = excluded.grabSelection()
 }
+
+
+

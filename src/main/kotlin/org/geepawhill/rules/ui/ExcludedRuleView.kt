@@ -7,10 +7,8 @@ import tornadofx.*
 class ExcludedRuleView(book: RulebookModel, val rule: RuleModel) : RulesView, View() {
 
     private val baseView = RulesViewBase(book.excludedProperty, rule) {
-        it.apply {
-            readonlyColumn("Name", Rule::name)
-            readonlyColumn("Description", Rule::description)
-        }
+        readonlyColumn("Name", Rule::name)
+        readonlyColumn("Description", Rule::description)
     }
 
     override val root: Parent = baseView.root

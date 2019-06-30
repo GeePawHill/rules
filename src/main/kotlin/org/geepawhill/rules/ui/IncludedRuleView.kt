@@ -8,13 +8,11 @@ import tornadofx.*
 class IncludedRuleView(private val book: RulebookModel, val rule: RuleModel) : View(), RulesView {
 
     private val baseView = RulesViewBase(book.includedProperty, rule) {
-        it.apply {
-            column<Rule, String>("Sequence") {
-                SimpleStringProperty(book.includedProperty.value.indexOf(it.value).toString())
-            }
-            readonlyColumn("Name", Rule::name)
-            readonlyColumn("Description", Rule::description)
+        column<Rule, String>("Sequence") {
+            SimpleStringProperty(book.includedProperty.value.indexOf(it.value).toString())
         }
+        readonlyColumn("Name", Rule::name)
+        readonlyColumn("Description", Rule::description)
     }
 
     override val root: Parent = baseView.root

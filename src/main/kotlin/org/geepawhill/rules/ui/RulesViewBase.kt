@@ -7,7 +7,7 @@ import javafx.scene.control.TableView
 import org.geepawhill.rules.domain.Rule
 import tornadofx.*
 
-class RulesViewBase(rules: Property<ObservableList<Rule>>, val rule: RuleModel, columns: (TableView<Rule>) -> Unit) : View(), RulesView {
+class RulesViewBase(rules: Property<ObservableList<Rule>>, val rule: RuleModel, columns: TableView<Rule>.() -> Unit) : View(), RulesView {
 
     private lateinit var table: TableView<Rule>
 
@@ -16,7 +16,7 @@ class RulesViewBase(rules: Property<ObservableList<Rule>>, val rule: RuleModel, 
                 label("Included Rules")
                 table = tableview(rules) {
                     multiSelect(true)
-                    columns(this)
+                    apply { columns() }
                     bindSelected(rule)
                 }
             }

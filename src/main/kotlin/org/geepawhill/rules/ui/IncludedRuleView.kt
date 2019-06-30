@@ -4,17 +4,16 @@ import javafx.beans.property.SimpleStringProperty
 import javafx.scene.Parent
 import javafx.scene.control.TableView
 import org.geepawhill.rules.domain.Rule
-import org.geepawhill.rules.domain.Rulebase
 import tornadofx.*
 
-class IncludedRuleView(val base: Rulebase, val book: RulebookModel, val rule: RuleModel) : View() {
+class IncludedRuleView(private val book: RulebookModel, val rule: RuleModel) : View() {
 
-    lateinit var included: TableView<Rule>
+    private lateinit var table: TableView<Rule>
 
     override val root: Parent =
             vbox {
                 label("Included Rules")
-                included = tableview(book.includedProperty) {
+                table = tableview(book.includedProperty) {
                     multiSelect(true)
                     column<Rule, String>("Sequence") {
                         SimpleStringProperty(book.includedProperty.value.indexOf(it.value).toString())
@@ -25,29 +24,24 @@ class IncludedRuleView(val base: Rulebase, val book: RulebookModel, val rule: Ru
                 }
             }
 
-    val canExclude = included.isSelectedAndFocused()
+    val isSelectedAndFocused = table.isSelectedAndFocused()
 
     val canRaise = booleanBinding(
-            included.focusedProperty(),
-            included.selectionModel.selectedItemProperty())
+            table.focusedProperty(),
+            table.selectionModel.selectedItemProperty())
     {
-        included.focusedProperty().value && !included.selectionModel.selectedIndices.contains(0)
+        table.focusedProperty().value && !table.selectionModel.selectedIndices.contains(0)
     }
 
     val canLower = booleanBinding(
-            included.focusedProperty(),
-            included.selectionModel.selectedItemProperty())
+            table.focusedProperty(),
+            table.selectionModel.selectedItemProperty())
     {
-        included.focusedProperty().value && !included.selectionModel.selectedIndices.contains(included.items.size - 1)
+        table.focusedProperty().value && !table.selectionModel.selectedIndices.contains(table.items.size - 1)
     }
 
-    fun resetSelection(rules: List<Rule>) {
-        included.selectionModel.clearSelection()
-        rules.forEach { included.selectionModel.select(it) }
-        included.requestFocus()
-    }
-
-    fun grabSelection() = included.grabSelection()
+    fun resetSelection(rules: List<Rule>) = table.resetSelection(rules)
+    fun grabSelection() = table.grabSelection()
 
 }
 

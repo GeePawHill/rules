@@ -8,8 +8,8 @@ class RuleSelectionView(base: Rulebase, val book: RulebookModel) : View() {
 
     val rule = RuleModel()
 
-    private val includedRuleView = IncludedRuleView(base, book, rule)
-    private val excludedRuleView = ExcludedRuleView(base, book, rule)
+    private val includedRuleView = IncludedRuleView(book, rule)
+    private val excludedRuleView = ExcludedRuleView(book, rule)
 
     override val root: Parent =
             hbox {
@@ -19,12 +19,12 @@ class RuleSelectionView(base: Rulebase, val book: RulebookModel) : View() {
                     button("<") {
                         isFocusTraversable = false
                         action { include() }
-                        enableWhen(excludedRuleView.canInclude)
+                        enableWhen(excludedRuleView.isSelectedAndFocused)
                     }
                     button(">") {
                         isFocusTraversable = false
                         action { exclude() }
-                        enableWhen { includedRuleView.canExclude }
+                        enableWhen { includedRuleView.isSelectedAndFocused }
                     }
                     region { minHeight = 50.0 }
                     button("^") {

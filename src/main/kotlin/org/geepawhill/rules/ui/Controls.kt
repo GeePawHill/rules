@@ -12,6 +12,12 @@ fun TableView<Rule>.grabSelection(): List<Rule> {
     return result
 }
 
+fun TableView<Rule>.resetSelection(rules: List<Rule>) {
+    selectionModel.clearSelection()
+    rules.forEach { selectionModel.select(it) }
+    requestFocus()
+}
+
 fun <T> TableView<T>.isSelectedAndFocused() = booleanBinding(
         focusedProperty(),
         selectionModel.selectedItemProperty())

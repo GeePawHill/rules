@@ -15,120 +15,120 @@ class RulebookModelTest {
 
     @Test
     fun `lowers one rules priority`() {
-        model.rules.add(firstRule)
-        model.rules.add(secondRule)
+        model.included.add(firstRule)
+        model.included.add(secondRule)
 
         model.lower(listOf(firstRule))
-        assertThat(model.rules).containsExactly(secondRule, firstRule)
+        assertThat(model.included).containsExactly(secondRule, firstRule)
     }
 
     @Test
     fun `lowering is noop if single rule is last`() {
-        model.rules.add(firstRule)
-        model.rules.add(secondRule)
+        model.included.add(firstRule)
+        model.included.add(secondRule)
 
         model.lower(listOf(secondRule))
-        assertThat(model.rules).containsExactly(firstRule, secondRule)
+        assertThat(model.included).containsExactly(firstRule, secondRule)
     }
 
     @Test
     fun `lower is noop if multiple rule includes last`() {
-        model.rules.add(firstRule)
-        model.rules.add(secondRule)
-        model.rules.add(thirdRule)
+        model.included.add(firstRule)
+        model.included.add(secondRule)
+        model.included.add(thirdRule)
 
         model.lower(listOf(firstRule, thirdRule))
-        assertThat(model.rules).containsExactly(firstRule, secondRule, thirdRule)
+        assertThat(model.included).containsExactly(firstRule, secondRule, thirdRule)
     }
 
     @Test
     fun `lower is noop if multiple rule includes last, input order insignificant`() {
-        model.rules.add(firstRule)
-        model.rules.add(secondRule)
-        model.rules.add(thirdRule)
+        model.included.add(firstRule)
+        model.included.add(secondRule)
+        model.included.add(thirdRule)
 
         model.lower(listOf(thirdRule, firstRule))
-        assertThat(model.rules).containsExactly(firstRule, secondRule, thirdRule)
+        assertThat(model.included).containsExactly(firstRule, secondRule, thirdRule)
     }
 
     @Test
     fun `valid straight sequence lowers priority for all`() {
-        model.rules.add(firstRule)
-        model.rules.add(secondRule)
-        model.rules.add(thirdRule)
+        model.included.add(firstRule)
+        model.included.add(secondRule)
+        model.included.add(thirdRule)
 
         model.lower(listOf(firstRule, secondRule))
-        assertThat(model.rules).containsExactly(thirdRule, firstRule, secondRule)
+        assertThat(model.included).containsExactly(thirdRule, firstRule, secondRule)
     }
 
     @Test
     fun `valid non-straight sequence lowers priority for all`() {
-        model.rules.add(firstRule)
-        model.rules.add(secondRule)
-        model.rules.add(thirdRule)
-        model.rules.add(fourthRule)
+        model.included.add(firstRule)
+        model.included.add(secondRule)
+        model.included.add(thirdRule)
+        model.included.add(fourthRule)
 
         model.lower(listOf(firstRule, thirdRule))
-        assertThat(model.rules).containsExactly(secondRule, firstRule, fourthRule, thirdRule)
+        assertThat(model.included).containsExactly(secondRule, firstRule, fourthRule, thirdRule)
     }
 
     @Test
     fun `raises one rules priority`() {
-        model.rules.add(firstRule)
-        model.rules.add(secondRule)
+        model.included.add(firstRule)
+        model.included.add(secondRule)
 
         model.raise(listOf(secondRule))
-        assertThat(model.rules).containsExactly(secondRule, firstRule)
+        assertThat(model.included).containsExactly(secondRule, firstRule)
     }
 
     @Test
     fun `raising is noop if single rule is first`() {
-        model.rules.add(firstRule)
-        model.rules.add(secondRule)
+        model.included.add(firstRule)
+        model.included.add(secondRule)
 
         model.raise(listOf(firstRule))
-        assertThat(model.rules).containsExactly(firstRule, secondRule)
+        assertThat(model.included).containsExactly(firstRule, secondRule)
     }
 
     @Test
     fun `raise is noop if multiple rule includes first`() {
-        model.rules.add(firstRule)
-        model.rules.add(secondRule)
-        model.rules.add(thirdRule)
+        model.included.add(firstRule)
+        model.included.add(secondRule)
+        model.included.add(thirdRule)
 
         model.raise(listOf(firstRule, thirdRule))
-        assertThat(model.rules).containsExactly(firstRule, secondRule, thirdRule)
+        assertThat(model.included).containsExactly(firstRule, secondRule, thirdRule)
     }
 
     @Test
     fun `raise is noop if multiple rule includes first, input order does not matter`() {
-        model.rules.add(firstRule)
-        model.rules.add(secondRule)
-        model.rules.add(thirdRule)
+        model.included.add(firstRule)
+        model.included.add(secondRule)
+        model.included.add(thirdRule)
 
         model.raise(listOf(thirdRule, firstRule))
-        assertThat(model.rules).containsExactly(firstRule, secondRule, thirdRule)
+        assertThat(model.included).containsExactly(firstRule, secondRule, thirdRule)
     }
 
     @Test
     fun `valid straight sequence raises priority for all`() {
-        model.rules.add(firstRule)
-        model.rules.add(secondRule)
-        model.rules.add(thirdRule)
+        model.included.add(firstRule)
+        model.included.add(secondRule)
+        model.included.add(thirdRule)
 
         model.raise(listOf(secondRule, thirdRule))
-        assertThat(model.rules).containsExactly(secondRule, thirdRule, firstRule)
+        assertThat(model.included).containsExactly(secondRule, thirdRule, firstRule)
     }
 
     @Test
     fun `valid non-straight sequence raises priority for all`() {
-        model.rules.add(firstRule)
-        model.rules.add(secondRule)
-        model.rules.add(thirdRule)
-        model.rules.add(fourthRule)
+        model.included.add(firstRule)
+        model.included.add(secondRule)
+        model.included.add(thirdRule)
+        model.included.add(fourthRule)
 
         model.raise(listOf(secondRule, fourthRule))
-        assertThat(model.rules).containsExactly(secondRule, firstRule, fourthRule, thirdRule)
+        assertThat(model.included).containsExactly(secondRule, firstRule, fourthRule, thirdRule)
     }
 
 }

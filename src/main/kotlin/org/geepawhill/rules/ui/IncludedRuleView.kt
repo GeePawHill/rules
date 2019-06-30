@@ -14,10 +14,10 @@ class IncludedRuleView(val base: Rulebase, val book: RulebookModel, val rule: Ru
     override val root: Parent =
             vbox {
                 label("Included Rules")
-                included = tableview(book.rulesProperty) {
+                included = tableview(book.includedProperty) {
                     multiSelect(true)
                     column<Rule, String>("Sequence") {
-                        SimpleStringProperty(book.rulesProperty.value.indexOf(it.value).toString())
+                        SimpleStringProperty(book.includedProperty.value.indexOf(it.value).toString())
                     }
                     readonlyColumn("Name", Rule::name)
                     readonlyColumn("Description", Rule::description)

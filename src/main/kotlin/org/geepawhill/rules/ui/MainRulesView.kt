@@ -9,7 +9,7 @@ import tornadofx.*
 
 class MainRulesView() : View() {
     private val base = Rulebase()
-    val newBook = Rulebook("Name", "Description", mutableListOf<Rule>().observable())
+    val newBook = Rulebook("Name", "Description", mutableListOf<Rule>().observable(), base.rules)
 
     val book = RulebookModel()
 
@@ -21,11 +21,11 @@ class MainRulesView() : View() {
                     button("Show domain") {
                         action {
                             println("Model")
-                            book.rulesProperty.value.forEach {
+                            book.includedProperty.value.forEach {
                                 println("\t${it.name}")
                             }
                             println("Domain")
-                            newBook.rules.forEach {
+                            newBook.included.forEach {
                                 println("\t${it.name}")
                             }
                         }
@@ -40,9 +40,10 @@ class MainRulesView() : View() {
     init {
 
         for (i in 1..10) {
+            println("Start")
             val rule = Rule("Rule $i", "Description $i")
+            if ((i % 2) == 0) newBook.included.add(rule)
             base.rules += rule
-            if ((i % 2) == 0) newBook.rules.add(rule)
         }
         book.item = newBook
     }

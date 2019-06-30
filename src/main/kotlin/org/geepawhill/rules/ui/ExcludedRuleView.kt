@@ -13,7 +13,7 @@ class ExcludedRuleView(private val base: Rulebase, private val book: RulebookMod
     override val root: Parent =
             vbox {
                 label("Excluded Rules")
-                excluded = tableview {
+                excluded = tableview(book.excludedProperty) {
                     multiSelect(true)
                     readonlyColumn("Name", Rule::name)
                     readonlyColumn("Description", Rule::description)
@@ -24,14 +24,14 @@ class ExcludedRuleView(private val base: Rulebase, private val book: RulebookMod
     val canInclude = excluded.isSelectedAndFocused()
 
     init {
-        book.itemProperty.addListener { _, _, after ->
-            excluded.items = base.excluded(after)
-        }
+//        book.itemProperty.addListener { _, _, after ->
+//            excluded.items = base.excluded(after)
+//        }
     }
 
     fun resetSelection(rules: List<Rule>) {
         excluded.selectionModel.clearSelection()
-        excluded.items = base.excluded(book.item)
+//        excluded.items = base.excluded(book.item)
         rules.forEach { excluded.selectionModel.select(it) }
         excluded.requestFocus()
     }

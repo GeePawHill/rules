@@ -3,8 +3,8 @@ package org.geepawhill.rules.domain
 import tornadofx.*
 
 class Rulebase {
-    val rules = mutableListOf<Rule>()
-    val books = mutableListOf<Rulebook>()
+    val rules = observableList<Rule>()
+    val books = observableList<Rulebook>()
 
-    fun excluded(book: Rulebook) = rules.filter { !book.rules.contains(it) }.toMutableList().observable()
+    fun excluded(book: Rulebook) = rules.filter { !book.included.contains(it) }.toMutableList().observable()
 }

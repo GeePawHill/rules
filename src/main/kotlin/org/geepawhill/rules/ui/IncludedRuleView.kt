@@ -2,47 +2,27 @@ package org.geepawhill.rules.ui
 
 import javafx.beans.property.SimpleStringProperty
 import javafx.scene.Parent
-import javafx.scene.control.TableView
 import org.geepawhill.rules.domain.Rule
 import tornadofx.*
 
-class IncludedRuleView(private val book: RulebookModel, val rule: RuleModel) : View() {
+class IncludedRuleView(private val book: RulebookModel, val rule: RuleModel) : View(), RulesView {
 
-    private lateinit var table: TableView<Rule>
-
-    override val root: Parent =
-            vbox {
-                label("Included Rules")
-                table = tableview(book.includedProperty) {
-                    multiSelect(true)
-                    column<Rule, String>("Sequence") {
-                        SimpleStringProperty(book.includedProperty.value.indexOf(it.value).toString())
-                    }
-                    readonlyColumn("Name", Rule::name)
-                    readonlyColumn("Description", Rule::description)
-                    bindSelected(rule)
-                }
+    private val baseView = RulesViewBase(book.includedProperty, rule) {
+        it.apply {
+            column<Rule, String>("Sequence") {
+                SimpleStringProperty(book.includedProperty.value.indexOf(it.value).toString())
             }
-
-    val isSelectedAndFocused = table.isSelectedAndFocused()
-
-    val canRaise = booleanBinding(
-            table.focusedProperty(),
-            table.selectionModel.selectedItemProperty())
-    {
-        table.focusedProperty().value && !table.selectionModel.selectedIndices.contains(0)
+            readonlyColumn("Name", Rule::name)
+            readonlyColumn("Description", Rule::description)
+        }
     }
 
-    val canLower = booleanBinding(
-            table.focusedProperty(),
-            table.selectionModel.selectedItemProperty())
-    {
-        table.focusedProperty().value && !table.selectionModel.selectedIndices.contains(table.items.size - 1)
-    }
-
-    fun resetSelection(rules: List<Rule>) = table.resetSelection(rules)
-    fun grabSelection() = table.grabSelection()
-
+    override val root: Parent = baseView.root
+    override val isSelectedAndFocused = baseView.isSelectedAndFocused
+    override val canRaise = baseView.canRaise
+    override val canLower = baseView.canLower
+    override fun resetSelection(rules: List<Rule>) = baseView.resetSelection(rules)
+    override fun grabSelection() = baseView.grabSelection()
 }
 
 

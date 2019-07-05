@@ -13,7 +13,7 @@ class MainRulesView() : View() {
 
     val book = RulebookModel()
 
-    private val ruleSelectionView = RuleSelectionView(base, book)
+    private val ruleSelectionView = RuleSelectionView(book)
 
     override val root: Parent =
             vbox {
@@ -40,7 +40,6 @@ class MainRulesView() : View() {
     init {
 
         for (i in 1..10) {
-            println("Start")
             val rule = Rule("Rule $i", "Description $i")
             if ((i % 2) == 0) newBook.included.add(rule)
             base.rules += rule

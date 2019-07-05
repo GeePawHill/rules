@@ -1,10 +1,12 @@
 package org.geepawhill.rules.ui
 
+import javafx.beans.binding.BooleanBinding
+import javafx.event.EventTarget
 import javafx.scene.Parent
-import org.geepawhill.rules.domain.Rulebase
+import org.geepawhill.rules.domain.Rule
 import tornadofx.*
 
-class RuleSelectionView(base: Rulebase, val book: RulebookModel) : View() {
+class RuleSelectionView(private val book: RulebookModel) : View() {
 
     val rule = RuleModel()
 
@@ -16,53 +18,36 @@ class RuleSelectionView(base: Rulebase, val book: RulebookModel) : View() {
                 this += includedRuleView
                 vbox {
                     region { minHeight = 50.0 }
-                    button("<") {
-                        isFocusTraversable = false
-                        action { include() }
-                        enableWhen(excludedRuleView.isSelectedAndFocused)
+                    toolbutton("<", excludedRuleView.isSelectedAndFocused) {
+                        moveRule(excludedRuleView, includedRuleView) { include(it) }
                     }
-                    button(">") {
-                        isFocusTraversable = false
-                        action { exclude() }
-                        enableWhen { includedRuleView.isSelectedAndFocused }
+                    toolbutton(">", includedRuleView.isSelectedAndFocused) {
+                        moveRule(includedRuleView, excludedRuleView) { exclude(it) }
                     }
                     region { minHeight = 50.0 }
-                    button("^") {
-                        isFocusTraversable = false
-                        action { raise() }
-                        enableWhen { includedRuleView.canRaise }
+                    toolbutton("^", includedRuleView.canRaise) {
+                        moveRule(includedRuleView, includedRuleView) { raise(it) }
                     }
-                    button("v") {
-                        isFocusTraversable = false
-                        action { lower() }
-                        enableWhen { includedRuleView.canLower }
+                    toolbutton("v", includedRuleView.canLower) {
+                        moveRule(includedRuleView, includedRuleView) { lower(it) }
                     }
                 }
                 this += excludedRuleView
             }
 
-    private fun exclude() {
-        val toMove = includedRuleView.grabSelection()
-        book.exclude(toMove)
-        excludedRuleView.resetSelection(toMove)
+    private fun EventTarget.toolbutton(text: String, enable: BooleanBinding, action: () -> Unit) {
+        button(text) {
+            isFocusTraversable = false
+            action {
+                action()
+            }
+            enableWhen(enable)
+        }
     }
 
-    private fun include() {
-        val toMove = excludedRuleView.grabSelection()
-        book.include(toMove)
-        excludedRuleView.resetSelection(emptyList())
-        includedRuleView.resetSelection(toMove)
-    }
-
-    private fun raise() {
-        val toRaise = includedRuleView.grabSelection()
-        book.raise(toRaise)
-        includedRuleView.resetSelection(toRaise)
-    }
-
-    private fun lower() {
-        val toLower = includedRuleView.grabSelection()
-        book.lower(toLower)
-        includedRuleView.resetSelection(toLower)
+    private fun moveRule(fromView: RulesView, toView: RulesView, move: RulebookModel.(List<Rule>) -> Unit) {
+        val toChange = fromView.grabSelection()
+        book.move(toChange)
+        toView.resetSelection(toChange)
     }
 }
